@@ -146,7 +146,7 @@ $ mvn clean package -pl warcbase-core
 Change directory to `warcbase-core` and fire up the Spark shell:
 
 ```
-$ my-spark-shell --jars target/warcbase-core-0.1.0-SNAPSHOT-fatjar.jar --num-executors 4 --executor-cores 8 
+$ my-spark-shell --jars target/warcbase-core-0.1.0-SNAPSHOT-fatjar.jar --num-executors 4 --executor-cores 8
 ```
 
 Try the following script:
@@ -173,7 +173,9 @@ r.take(10)
 val s = tweets.map(tweet => tweet.lang).countItems().collect()
 
 // Count the number of hashtags
-val hashtags = tweets.flatMap(tweet => {"""#[^ ]+""".r.findAllIn(tweet.text).toList})
+val hashtags = tweets.map(tweet => tweet.text)
+                     .filter(text => text != null)
+                     .flatMap(text => {"""#[^ ]+""".r.findAllIn(text).toList})
                      .countItems().collect()
 ```
 
