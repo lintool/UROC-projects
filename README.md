@@ -143,6 +143,12 @@ You can then build Warcbase.
 $ mvn clean package -pl warcbase-core
 ```
 
+If the system can't find `mvn`, do:
+
+```
+$ scl enable maven30 bash
+```
+
 Change directory to `warcbase-core` and fire up the Spark shell:
 
 ```
