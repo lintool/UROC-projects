@@ -208,6 +208,21 @@ val counts = tweets.map(tweet => tweet.createdAt)
   .collect()
 ```
 
+The tweets are stored on HDFS at `/shared/cs489/uroc2016/tweet2016-08`. To list them:
+
+```
+$ hadoop fs -ls /shared/cs489/uroc2016/tweet2016-08
+```
+
+To examine each individual file containing the tweets:
+
+```
+$ hadoop fs -cat /shared/cs489/uroc2016/tweet2016-08/statuses.log.2016-08-01-00.gz | gunzip -c | less
+```
+
+It might be helpful when you are developing to just run over a few
+files, e.g., `statuses.log.2016-08-01*`;
+
 ## Parsing JSON
 
 Tweets are just JSON objects, see examples
