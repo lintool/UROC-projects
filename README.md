@@ -239,7 +239,7 @@ some examples:
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
 
-val sampleTweet = """..."""
+val sampleTweet = """  [insert tweet in JSON format here] """
 val json = parse(sampleTweet)
 ```
 
