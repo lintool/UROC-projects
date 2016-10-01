@@ -126,33 +126,23 @@ $ hadoop fs -rm -r Shakespeare-counts/
 colleagues and I have been developing for analyzing web archives and
 tweets. We'll be using Warcbase.
 
+**IMPORTANT**:
 To get started, create a working directory for yourself under
 `/projects/waterloo/`.  There is very little space in the disk volume
 that holds your home directory. Don't work there, because you'll run
 out of space quickly!
 
-In your new projects directory, clone the repo:
+To save you some time, the Warcbase jar as been pre-built and stored at:
 
 ```
-$ git clone http://github.com/lintool/warcbase.git
+/projects/waterloo/warcbase-core-0.1.0-SNAPSHOT-fatjar.jar 
 ```
 
-You can then build Warcbase.
+Fire up the Spark shell as follows:
 
 ```
-$ mvn clean package -pl warcbase-core
-```
-
-If the system can't find `mvn`, do:
-
-```
-$ scl enable maven30 bash
-```
-
-Change directory to `warcbase-core` and fire up the Spark shell:
-
-```
-$ my-spark-shell --jars target/warcbase-core-0.1.0-SNAPSHOT-fatjar.jar --num-executors 4 --executor-cores 8
+$ my-spark-shell --jars /projects/waterloo/warcbase-core-0.1.0-SNAPSHOT-fatjar.jar \
+   --num-executors 4 --executor-cores 8
 ```
 
 Try the following script:
@@ -255,6 +245,24 @@ implicit lazy val formats = org.json4s.DefaultFormats
 (json \ "created_at").extract[String]
 ```
 
+## Building Warcbase
 
+If you want to modify Warcbase itself, clone the repo:
+
+```
+$ git clone http://github.com/lintool/warcbase.git
+```
+
+You can then build Warcbase.
+
+```
+$ mvn clean package -pl warcbase-core
+```
+
+If the system can't find `mvn`, do:
+
+```
+$ scl enable maven30 bash
+```
 
 
