@@ -39,6 +39,9 @@ Once you ssh into the workspace, to properly set up your environment,
 add the following lines to your `.bash_profile`:
 
 ```
+PATH=$PATH:/opt/spark/bin
+export PATH
+
 export SCALA_HOME=/opt/scala
 export YARN_CONF_DIR=/etc/hadoop/
 export SPARK_HOME=/opt/spark/
@@ -207,9 +210,10 @@ Tweets are just JSON objects, see examples
 API documentation](https://dev.twitter.com/overview/api/tweets) that
 tells you what all the fields mean.
 
-Warcbase internally uses [json4s](https://github.com/json4s/json4s) to
-access fields in JSON. You can manipulate fields directly, here are
-some examples:
+The Archives Unleashed Toolkit internally uses
+[json4s](https://github.com/json4s/json4s) to access fields in
+JSON. You can manipulate fields directly to access any part of tweets.
+Here are some examples:
 
 ```
 import org.json4s._
