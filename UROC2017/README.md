@@ -123,7 +123,22 @@ To save you some time, the UAT jar as been pre-built and stored at:
 /projects/au/aut-0.9.0-fatjar.jar
 ```
 
-Fire up the Spark shell as follows:
+We've gathered some tweets for you, stored on HDFS at `/shared/uwaterloo/uroc2017/tweets-2016-11`. To list them:
+
+```
+$ hadoop fs -ls /shared/uwaterloo/uroc2017/tweets-2016-11
+```
+
+To examine each individual file containing the tweets:
+
+```
+$ hadoop fs -cat /shared/uwaterloo/uroc2017/tweets-2016-11/statuses.log.2016-11-01-00.gz | gunzip -c | less
+```
+
+It might be helpful when you are developing to just run over a few
+files, e.g., `statuses.log.2016-11-01*`.
+
+Let's get crunching! Fire up the Spark shell as follows:
 
 ```
 $ spark-shell --jars /projects/au/aut-0.9.0-fatjar.jar \
@@ -138,7 +153,7 @@ import io.archivesunleashed.spark.matchbox.TweetUtils._
 import io.archivesunleashed.spark.rdd.RecordRDD._
 
 // Load tweets from HDFS
-val tweets = RecordLoader.loadTweets("/shared/uwaterloo/uroc2016/tweet2016-08", sc)
+val tweets = RecordLoader.loadTweets("/shared/uwaterloo/uroc2017/tweets-2016-11", sc)
 
 // Count them
 tweets.count()
@@ -173,7 +188,7 @@ import io.archivesunleashed.spark.rdd.RecordRDD._
 import java.text.SimpleDateFormat
 import java.util.TimeZone
 
-val tweets = RecordLoader.loadTweets("/shared/uwaterloo/uroc2016/tweet2016-08", sc)
+val tweets = RecordLoader.loadTweets("/shared/uwaterloo/uroc2017/tweets-2016-11", sc)
 
 val counts = tweets.map(tweet => tweet.createdAt)
   .mapPartitions(iter => {
@@ -187,23 +202,40 @@ val counts = tweets.map(tweet => tweet.createdAt)
   .collect()
 ```
 
-The tweets are stored on HDFS at `/shared/uwaterloo/uroc2016/tweet2016-08`. To list them:
+Let's put multiple elements above together and count daily mentions of [@HillaryClinton](https://twitter.com/HillaryClinton):
 
 ```
-$ hadoop fs -ls /shared/uwaterloo/uroc2016/tweet2016-08
+import io.archivesunleashed.spark.matchbox._
+import io.archivesunleashed.spark.matchbox.TweetUtils._
+import io.archivesunleashed.spark.rdd.RecordRDD._
+import java.text.SimpleDateFormat
+import java.util.TimeZone
+
+val tweets = RecordLoader.loadTweets("/shared/uwaterloo/uroc2017/tweets-2016-11/", sc)
+
+val clintonCounts = tweets
+  .filter(tweet => tweet.text != null && tweet.text.contains("@HillaryClinton"))
+  .map(tweet => tweet.createdAt)
+  .mapPartitions(iter => {
+      TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
+      val dateIn = new SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZZ yyyy")
+      val dateOut = new SimpleDateFormat("yyyy-MM-dd")
+    iter.map(d => try { dateOut.format(dateIn.parse(d)) } catch { case e: Exception => null })})
+  .filter(d => d != null)
+  .countItems()
+  .sortByKey()
+  .collect()
 ```
 
-To examine each individual file containing the tweets:
+Simple exercises you might want to understake:
 
-```
-$ hadoop fs -cat /shared/uwaterloo/uroc2016/tweet2016-08/statuses.log.2016-08-01-00.gz | gunzip -c | less
-```
-
-It might be helpful when you are developing to just run over a few
-files, e.g., `statuses.log.2016-08-01*`;
++ Count daily mentions of [@realDonaldTrump](https://twitter.com/realDonaldTrump):
++ Visualize the results using something like [Rickshaw](http://code.shutterstock.com/rickshaw/)
++ Perform the same analysis on a minute-by-minute granularity, focusing on election night.
 
 ## Parsing JSON
 
+What if you want to do more and access more data inside tweets?
 Tweets are just JSON objects, see examples
 [here](https://gist.github.com/hrp/900964) and
 [here](https://gist.github.com/gnip/764239).  Twitter has [detailed
