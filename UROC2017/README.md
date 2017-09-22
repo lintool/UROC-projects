@@ -31,14 +31,14 @@ Protocol 2,1
 
 And you should be able to ssh into the workspace:
 
-```
+```sh
 $ ssh altiscale
 ```
 
 Once you ssh into the workspace, to properly set up your environment,
 add the following lines to your `.bash_profile`:
 
-```
+```sh
 PATH=$PATH:/opt/spark/bin
 export PATH
 
@@ -55,13 +55,13 @@ cd
 
 Take a look at the following file on HDFS that we're going to play with:
 
-```
+```sh
 $ hadoop fs -cat /shared/uwaterloo/uroc2017/Shakespeare.txt | less
 ```
 
 Start the Spark shell:
 
-```
+```sh
 $ spark-shell --num-executors 2 --executor-cores 4
 ```
 
@@ -71,7 +71,7 @@ them.
 
 Copy and paste the following following Spark word count program:
 
-```
+```scala
 scala> :p
 // Entering paste mode (ctrl-D to finish)
 
@@ -87,7 +87,7 @@ Spark shell.
 
 In another shell, you can examine the output:
 
-```
+```sh
 $ hadoop fs -ls Shakespeare-counts/
 Found 3 items
 -rw-r--r--   3 jimmylin users          0 2016-09-28 20:24 Shakespeare-counts/_SUCCESS
@@ -100,7 +100,7 @@ $ hadoop fs -cat Shakespeare-counts/part-00000 | less
 If you want to re-run the above Spark script again, first delete the
 existing output:
 
-```
+```sh
 $ hadoop fs -rm -r Shakespeare-counts/
 ```
 
@@ -125,13 +125,13 @@ To save you some time, the UAT jar as been pre-built and stored at:
 
 We've gathered some tweets for you, stored on HDFS at `/shared/uwaterloo/uroc2017/tweets-2016-11`. To list them:
 
-```
+```sh
 $ hadoop fs -ls /shared/uwaterloo/uroc2017/tweets-2016-11
 ```
 
 To examine each individual file containing the tweets:
 
-```
+```sh
 $ hadoop fs -cat /shared/uwaterloo/uroc2017/tweets-2016-11/statuses.log.2016-11-01-00.gz | gunzip -c | less
 ```
 
@@ -140,14 +140,14 @@ files, e.g., `statuses.log.2016-11-01*`.
 
 Let's get crunching! Fire up the Spark shell as follows:
 
-```
+```sh
 $ spark-shell --jars /projects/au/aut-0.9.0-fatjar.jar \
     --num-executors 4 --executor-cores 8 --executor-memory 32G
 ```
 
 Try the following script:
 
-```
+```scala
 import io.archivesunleashed.spark.matchbox._
 import io.archivesunleashed.spark.matchbox.TweetUtils._
 import io.archivesunleashed.spark.rdd.RecordRDD._
@@ -181,7 +181,7 @@ hashtags.take(10)
 
 Here's an example of how you parse the `created_at` date field:
 
-```
+```scala
 import io.archivesunleashed.spark.matchbox._
 import io.archivesunleashed.spark.matchbox.TweetUtils._
 import io.archivesunleashed.spark.rdd.RecordRDD._
@@ -204,7 +204,7 @@ val counts = tweets.map(tweet => tweet.createdAt)
 
 Let's put multiple elements above together and count daily mentions of [@HillaryClinton](https://twitter.com/HillaryClinton):
 
-```
+```scala
 import io.archivesunleashed.spark.matchbox._
 import io.archivesunleashed.spark.matchbox.TweetUtils._
 import io.archivesunleashed.spark.rdd.RecordRDD._
@@ -247,7 +247,7 @@ The Archives Unleashed Toolkit internally uses
 JSON. You can manipulate fields directly to access any part of tweets.
 Here are some examples:
 
-```
+```scala
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
 
@@ -257,7 +257,7 @@ val json = parse(sampleTweet)
 
 The you can do something like:
 
-```
+```scala
 implicit lazy val formats = org.json4s.DefaultFormats
 
 // Extract id
