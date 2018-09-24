@@ -6,3 +6,4 @@ Undergraduate Research Opportunities Conference (UROC) is a fully-funded researc
 
 + [UROC 2016](https://cs.uwaterloo.ca/conferences/uroc/2016/)
 + [UROC 2017](https://cs.uwaterloo.ca/conferences/uroc/2017/)
++ [UROC 2018](https://cs.uwaterloo.ca/future-graduate-students/uroc)
